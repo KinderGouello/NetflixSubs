@@ -4,8 +4,8 @@ $(function() {
 	var $urlApi = 'http://192.168.99.100/ApiSubtitles/site/',
 		$key = '',
 		$language = window.navigator.userLanguage || window.navigator.language,
-		$title = 'It\'s always sunny in Philadelphia',
-		$explodes = ['Saison', '7', 'episode', '1'];
+		$title,
+		$explodes;
 
 	function getLogin() {
 		// Si la personne ne s'est pas loggé
@@ -37,7 +37,7 @@ $(function() {
 									// Si la personne est loggée, alors on lui propose de télécharger les soustitres
 									$key = data.key;
 									// getSubtitles($title.text(), $explodes[1], $explodes[3], $language);
-									getSubtitles($title, $explodes[1], $explodes[3], $language);
+									getSubtitles($title.text(), parseInt($explodes[1].replace(':', '')), parseInt($explodes[3]), $language);
 								}
 							}
 						);
@@ -47,7 +47,7 @@ $(function() {
 				// Si la personne est loggée, alors on lui propose de télécharger les soustitres
 				$key = data.value;
 				// getSubtitles($title.text(), $explodes[1], $explodes[3], $language);
-				getSubtitles($title, $explodes[1], $explodes[3], $language);
+				getSubtitles($title.text(), parseInt($explodes[1].replace(':', '')), parseInt($explodes[3]), $language);
 			}
 		});
 	}
@@ -67,7 +67,7 @@ $(function() {
 				data = $.parseJSON(data);
 
 				if (data.success === 1 && data.subtitles !== '') {
-					downloadPage(data.name, data.subtitles);
+					downloadPage(data.subtitles, data.name);
 				} else {
 					getListSubtitles($title, $season, $episode, $language);
 				}
@@ -93,7 +93,7 @@ $(function() {
 				if (data.success === 1) {
 					$('#netflixSubs').html('<form id="netflixSubsChooseSubtitle" class="form-horizontal"><select class="form-control" name="subtitles" id="netflixSubsSubtitles"></select><button type="submit" class="btn btn-default">Choose</button></form>');
 					$.each(data.liste, function(index, val) {
-						 $('#netflixSubs select').append('<option value="' + val.IDSubtitle + '">' + val.SubFileName + '</option>');
+						 $('#netflixSubs select').append('<option value="' + val.IDSubtitleFile + '">' + val.SubFileName + '</option>');
 					});
 
 					$('#netflixSubsChooseSubtitle').off('submit').on('submit', function(event) {
@@ -101,13 +101,19 @@ $(function() {
 
 						$.get($urlApi + 'soustitres/downloadById',
 							{
-								'idsubtitle': $('#netflixSubsSubtitles option:selected').val()
+								title: $title,
+								season: $season,
+								episode: $episode,
+								idserie: data.idserie,
+								language: $language,
+								idsubtitle: $('#netflixSubsSubtitles option:selected').val(),
+								key: $key
 							},
 							function(data) {
 								data = $.parseJSON(data);
 
 								if (data.success === 1 && data.subtitles !== '') {
-									downloadPage(data.name, data.subtitles);
+									downloadPage(data.subtitles, data.name);
 								}	
 							}
 						);
@@ -138,9 +144,7 @@ $(function() {
 	
 	chrome.runtime.onMessage.addListener(function(request, sender) {
 	  if (request.action == "getSource") {
-		var html = $.parseHTML(request.source),
-			$title = '',
-			$explodes = '';
+		var html = $.parseHTML(request.source);
 
 		$.each(html, function(i, el) {
 			var idElement = $(el).attr('id');
