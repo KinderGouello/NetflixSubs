@@ -1,12 +1,16 @@
 $(function() {
 
-	var $urlApi = 'http://remygouello.fr/ApiSubtitles/site/',
-	// var $urlApi = 'http://192.168.99.100/ApiSubtitles/site/',
+	// var $urlApi = 'http://remygouello.fr/ApiSubtitles/site/',
+	var $urlApi = 'http://192.168.99.100/ApiSubtitles/site/',
 		$key = '',
 		$language = window.navigator.userLanguage || window.navigator.language,
 		$title,
 		$season = '',
 		$episode = '',
+		$idsubtitle = '',
+		$idserie = '',
+		$subtitles = '',
+		$name = '',
 		$explodes;
 
 	function getLogin() {
@@ -43,7 +47,9 @@ $(function() {
 										$season = parseInt($explodes[1].replace(':', ''));
 										$episode = parseInt($explodes[3]);
 									}
-									getSubtitles($title.text(), $season, $episode, $language);
+									$title = $title.text();
+
+									getSubtitles();
 								}
 							}
 						);
@@ -57,12 +63,14 @@ $(function() {
 					$season = parseInt($explodes[1].replace(':', ''));
 					$episode = parseInt($explodes[3]);
 				}
-				getSubtitles($title.text(), $season, $episode, $language);
+				$title = $title.text();
+
+				getSubtitles();
 			}
 		});
 	}
 
-	function getSubtitles($title, $season, $episode, $language) {
+	function getSubtitles() {
 		$('#netflixSubs').html('').load('html/loader.html', function() {
 			$('#messageLoader').text('Recovery subtitles...');
 		});
@@ -77,17 +85,20 @@ $(function() {
 			},
 			function(data) {
 				data = $.parseJSON(data);
+				$subtitles = data.subtitles;
+				$name = data.name;
+				$idserie = data.idserie;
 
-				if (data.success === 1 && data.subtitles !== '') {
-					downloadPage(data.subtitles, data.name);
+				if (data.success === 1 && $subtitles !== '') {
+					downloadPage();
 				} else {
-					getListSubtitles($title, $season, $episode, $language);
+					getListSubtitles();
 				}
 			}
 		);
 	}
 
-	function getListSubtitles($title, $season, $episode, $language) {
+	function getListSubtitles() {
 		$('#netflixSubs').html('').load('html/loader.html', function() {
 			$('#messageLoader').text('No subtitles was already downloaded, recovery attempt subtitles lists...');
 		});
@@ -112,7 +123,8 @@ $(function() {
 
 						$('#netflixSubsChooseSubtitle').off('submit').on('submit', function(event) {
 							event.preventDefault();
-							$subtitlesSelected = $('#netflixSubsSubtitles').find(':selected').val();
+							$idsubtitle = $('#netflixSubsSubtitles').find(':selected').val();
+							$idserie = data.idserie;
 
 							$('#netflixSubs').html('').load('html/loader.html', function() {
 								$('#messageLoader').text('Recovery subtitles...');
@@ -123,21 +135,23 @@ $(function() {
 									title: $title,
 									season: $season,
 									episode: $episode,
-									idserie: data.idserie,
+									idserie: $idserie,
 									language: $language,
-									idsubtitle: $subtitlesSelected,
+									idsubtitle: $idsubtitle,
 									key: $key
 								}
 							)
 							.done(function(data) {
 								data = $.parseJSON(data);
+								$subtitles = data.subtitles;
+								$name = data.name;
 
-								if (data.success === 1 && data.subtitles !== '') {
-									downloadPage(data.subtitles, data.name);
+								if (data.success === 1 && $subtitles !== '') {
+									downloadPage();
 								}
 							})
 							.fail(function(data) {
-								getListSubtitles($title, $season, $episode, $language);
+								getListSubtitles();
 							});
 						});
 					});
@@ -146,18 +160,48 @@ $(function() {
 		);
 	}
 
-	function synchroSubtitles() {
-		// body...
-	}
-
-	function downloadPage(subtitles, name) {
+	function downloadPage() {
 		$('#netflixSubs').html('').load('html/download.html', function() {
-			$('#subtitlesFilename').text(name);
+			// Activation des tabs
+			$('a[data-toggle="tab"]').click(function(e) {
+			  e.preventDefault();
+			  $(this).tab('show');
+			});
+
+			$('#subtitlesFilename').text($name);
 
 			$('#DownloadSubtitles').off('click').on('click', function(event) {
 				chrome.downloads.download({
-				  url: 'data:,' + subtitles,
-				  filename: name
+				  url: 'data:,' + $subtitles,
+				  filename: $name
+				});
+			});
+
+			$('#formResync').off('submit').on('submit', function(event) {
+				event.preventDefault();
+				$.get($urlApi + 'soustitres/resync',
+					{
+						title: $title,
+						season: $season,
+						episode: $episode,
+						idserie: $idserie,
+						language: $language,
+						key: $key,
+						direction: $('#selectDirection').find(':selected').val(),
+						time: $('#inputResync').val()
+					}
+				)
+				.done(function(data) {
+					console.log(data);
+					data = $.parseJSON(data);
+					$subtitles = data.subtitles;
+
+					if (data.success === 1 && data.subtitles !== '') {
+						downloadPage(data.name);
+					}
+				})
+				.fail(function(data) {
+					downloadPage();
 				});
 			});
 		});

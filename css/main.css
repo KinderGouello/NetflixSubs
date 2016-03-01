@@ -36,3 +36,27 @@ header .version{
     color: #fff;
     border-color: #E50914;
 }
+
+.nav-tabs.nav-justified{
+    width: 100%;
+    border-bottom: 0;
+    margin-bottom: 20px;
+}
+.nav-tabs.nav-justified>li {
+    float: none;
+}
+.nav-tabs.nav-justified>li {
+    display: table-cell;
+    width: 1%;
+}
+.nav-tabs.nav-justified>li>a {
+    margin-right: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
+    text-align: center;
+}
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:focus, .nav-tabs.nav-justified>.active>a:hover {
+    border: 1px solid #ddd;
+    border-bottom-color: #fff;
+}
