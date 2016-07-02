@@ -1,7 +1,7 @@
 $(function() {
 
-	// var $urlApi = 'http://remygouello.fr/ApiSubtitles/site/',
-	var $urlApi = 'http://192.168.99.100/ApiSubtitles/site/',
+	var $urlApi = 'http://remygouello.fr/ApiSubtitles/site/',
+	// var $urlApi = 'http://192.168.99.100/ApiSubtitles/site/',
 		$key = '',
 		$language = window.navigator.userLanguage || window.navigator.language,
 		$title,
