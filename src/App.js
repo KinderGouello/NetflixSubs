@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Header from './components/Header';
+import LoginForm from './components/LoginForm';
 
-class App extends Component {
+class App extends React.Component {
   render() {
     return (
-      <h1>Netflix Subs</h1>
+      <div>
+        <Header />
+        <LoginForm />
+      </div>
     );
   }
 }
