@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input } from 'semantic-ui-react';
+import { Message, Button, Input } from 'semantic-ui-react';
 
 class LoginForm extends React.Component {
   constructor() {
@@ -18,27 +18,30 @@ class LoginForm extends React.Component {
   }
 
   handleInputChange(event) {
-    const name = event.target.name;
-
     this.setState({
-      [name]: event.target.value
+      [event.target.name]: event.target.value
     })
   }
 
   render() {
     return (
-      <form className="ui form" onSubmit={this.submit}>
-        <p>OpenSubtitles Login</p>
-        <div className="field">
-          <label>Email Address</label>
-          <Input name='email' value={this.state.email} onChange={this.handleInputChange} placeholder="usuario@dominio.com" />
-        </div>
-        <div className="field">
-          <label>Password</label>
-          <Input name='password' type='password' value={this.state.password} onChange={this.handleInputChange} placeholder="Password" />
-        </div>
-        <Button content='Login' />
-      </form>
+      <div>
+        <Message info>
+          <Message.Header>Login to your OpenSubtitles Account</Message.Header>
+          <p>You need to have already a OpenSubtitles account. Connect with your logins of OpenSubtitles.org.</p>
+        </Message>
+        <form className="ui form" onSubmit={this.submit}>
+          <div className="field">
+            <label>Email Address</label>
+            <Input name='email' value={this.state.email} onChange={this.handleInputChange} placeholder="usuario@dominio.com" />
+          </div>
+          <div className="field">
+            <label>Password</label>
+            <Input name='password' type='password' value={this.state.password} onChange={this.handleInputChange} placeholder="Password" />
+          </div>
+          <Button content='Login' />
+        </form>
+      </div>
     )
   }
 }
