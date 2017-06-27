@@ -19,9 +19,9 @@ class ChooseForm extends React.Component {
 
   render() {
     return (
-      <form className="ui form" onSubmit={this.submit}>
+      <form className="ui form" onSubmit={onSubmit}>
         <div className="field">
-          <Select onChange={this.handleSelectChange} placeholder='Select your subtitles' options={this.options} />
+          <Select onChange={onChange} placeholder='Select your subtitles' options={this.options} />
         </div>
         <Button content='Choose' />
       </form>
