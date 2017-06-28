@@ -5,7 +5,7 @@ export const loadNetflixInformations = (informations) => ({
 });
 
 export const CHOOSE_SUBTITLES = 'CHOOSE_SUBTITLES';
-export const chooseSubtitles = (subtitles) => ({
-  type: 'CHOOSE_SUBTITLES',
-  subtitles,
+export const chooseSubtitles = (subtitle) => ({
+  type: CHOOSE_SUBTITLES,
+  subtitle,
 });

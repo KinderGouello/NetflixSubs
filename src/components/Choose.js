@@ -1,32 +1,40 @@
-import React from 'react';
-import { Select, Button } from 'semantic-ui-react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Dropdown, Button } from 'semantic-ui-react';
 
-class ChooseForm extends React.Component {
-  constructor() {
-    super();
-    this.state = { subtitles: '' };
-    this.options = [{key: '', value: ''}, { key: 'af', value: 'af', text: 'Afghanistan' }, ...{}];
-    this.handleSelectChange = this.handleSelectChange.bind(this);
-  }
-
-  submit(event) {
+class ChooseForm extends Component {
+  handleChange(event, data) {
     event.preventDefault();
-  }
-
-  handleSelectChange(event, data) {
-    this.setState({ subtitles: data.value });
+    this.props.onChange({
+      select: data.value,
+    });
   }
 
   render() {
+    const { options, placeholder, confirmText } = this.props;
+
     return (
-      <form className="ui form" onSubmit={onSubmit}>
+      <form className="ui form">
         <div className="field">
-          <Select onChange={onChange} placeholder='Select your subtitles' options={this.options} />
+          <Dropdown
+            selection
+            value={options.value}
+            onChange={(event, data) => this.handleChange(event, data)}
+            placeholder={placeholder}
+            options={options}
+          />
         </div>
-        <Button content='Choose' />
+        <Button content={confirmText} />
       </form>
     )
   }
 }
+
+ChooseForm.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
+  confirmText: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+};
 
 export default ChooseForm;

@@ -1,8 +1,8 @@
 import React from 'react';
 import Header from './Header/Header';
-import OpenSubtitlesLogin from '../containers/OpenSubtitlesLogin';
+// import OpenSubtitlesLogin from '../containers/OpenSubtitlesLogin';
 // import DownloadButton from './components/Download/DownloadButton';
-// import ChooseForm from './components/Choose/ChooseForm';
+import ChooseSubtitles from '../containers/ChooseSubtitles';
 
 class App extends React.Component {
   componentDidMount() {
@@ -31,7 +31,11 @@ class App extends React.Component {
       <div>
         <Header />
         <div style={{paddingLeft: '15px', paddingRight: '15px', paddingBottom: '15px',}}>
-          <OpenSubtitlesLogin />
+          <ChooseSubtitles
+            options={[{key: '', value: ''}, { key: 'af', value: 'af', text: 'Afghanistan' }, ...{}]}
+            placeholder='Select your subtitles'
+            confirmText='Choose'
+          />
         </div>
       </div>
     );
