@@ -1,8 +1,12 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+} from 'react-router-dom';
 import Header from './Header/Header';
-// import OpenSubtitlesLogin from '../containers/OpenSubtitlesLogin';
-// import DownloadButton from './components/Download/DownloadButton';
+import OpenSubtitlesLogin from '../containers/OpenSubtitlesLogin';
 import ChooseSubtitles from '../containers/ChooseSubtitles';
+import DownloadSubtitles from '../containers/DownloadSubtitles';
 
 class App extends React.Component {
   componentDidMount() {
@@ -30,13 +34,13 @@ class App extends React.Component {
     return (
       <div>
         <Header />
-        <div style={{paddingLeft: '15px', paddingRight: '15px', paddingBottom: '15px',}}>
-          <ChooseSubtitles
-            options={[{key: '', value: ''}, { key: 'af', value: 'af', text: 'Afghanistan' }, ...{}]}
-            placeholder='Select your subtitles'
-            confirmText='Choose'
-          />
-        </div>
+          <Router>
+            <div style={{paddingLeft: '15px', paddingRight: '15px', paddingBottom: '15px',}}>
+              <Route exact path="/" component={OpenSubtitlesLogin}/>
+              <Route path="/choice" component={ChooseSubtitles} />
+              <Route path="/download" component={DownloadSubtitles} />
+            </div>
+          </Router>
       </div>
     );
   }

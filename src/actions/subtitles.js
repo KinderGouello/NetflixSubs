@@ -9,3 +9,9 @@ export const chooseSubtitles = (subtitle) => ({
   type: CHOOSE_SUBTITLES,
   subtitle,
 });
+
+export const DOWNLOAD_SUBTITLE = 'DOWNLOAD_SUBTITLE';
+export const downloadSubtitle = (subtitle) => ({
+  type: DOWNLOAD_SUBTITLE,
+  subtitle,
+});
